@@ -40,11 +40,13 @@ void push(Stack* stack, int value) {
 
 StackStatus pop(Stack* stack) {
     StackElem* elems = malloc(sizeof(StackElem));
-    StackElem* aux = stack->head;
+    StackElem* aux = NULL;
 
     if(aux == NULL) {
         return stack_status_empty;
     }
+
+    aux = stack->head;
 
     elems->next = NULL;
 
