@@ -55,6 +55,7 @@ StackStatus pop(Stack* stack) {
 
     free(aux->next);
     aux->next = NULL;
+    stack->count--;
 
     return stack_status_ok;
 }
