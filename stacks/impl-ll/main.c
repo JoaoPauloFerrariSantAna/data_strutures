@@ -42,7 +42,7 @@ StackStatus pop(Stack* stack) {
     StackElem* elems = malloc(sizeof(StackElem));
     StackElem* aux = NULL;
 
-    if(aux == NULL) {
+    if(stack->head == NULL) {
         return stack_status_empty;
     }
 
