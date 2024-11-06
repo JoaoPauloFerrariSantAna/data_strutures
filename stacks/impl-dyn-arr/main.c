@@ -3,15 +3,65 @@
 
 /* now let's try to create a stack with a dynamic array */
 
+typedef int* Items;
+typedef int StackLength;
+typedef int StackNewLength;
+
 const int stack_empty = 0;
+
+StackLength stack_size = 5;
+/* this will be used to sum with "stack_size" */
+StackNewLength stack_new_limit = 4;
 
 /* from what i've understood, it is better to create a struct */
 /* because it is easier to keep track of the length */
 typedef struct {
 	int top;
-	int length;
-	int* items;
+	StackLength length;
+	Items items;
 } Stack; 
+
+void show(Items array, StackLength length) {
+	for(int i = 0; i < length; i++) {
+		printf("%d\n", array[i]);
+	}
+}
+
+void fill(Items items, int start, int until) {
+	for(int i = start; i < until; i++) {
+		items[i] = 2 * i;
+	}
+}
+
+void copy_to(Items dest, Items source, int until) {
+	for(int i = 0; i < until; i++) {
+		/* copying the data to "dest" from "source" */
+		dest[i] = source[i];
+	}
+}
+
+Items resize(Items old_items, StackLength old_space, int space) {
+	/* new size is just the old size plus some element */
+	/* because if we just want 10 cookies, and we just have 5 */
+	/* we will need to just get the amount that we have and */
+	/* sum it with what is left to get to the 10 cookies */
+	StackNewLength new_size = old_space + space;
+
+	/* when we were creating "array" all that we did was just */
+	/* get the size of an integer and multiply it with  */
+	/* the amount of elements that we needed */
+	/* it is the same thing here */
+	Items new_items = malloc(sizeof(int) * new_size);
+
+	/* copying elements to new array until the place */
+	/* where the old one ended */
+	copy_to(new_items, old_items, old_space + 1);
+
+	/* clearing the memory of the old array... */
+	free(old_items);
+
+	return new_items;
+}
 
 Stack* stack_create(int init_length) {
 	Stack* stack = malloc(sizeof(Stack));
@@ -27,8 +77,15 @@ Stack* stack_create(int init_length) {
 
 void push(Stack* stack, int value) {
 	if(stack->top == stack->length) {
-		printf("Overflow of the stack.\n");
-		return;
+		printf("updating length...\n");
+
+		/* instead of the size of "stack->items" */
+		/* we send the length, because then we will */
+		/* have the actual amount of the array size */
+		stack->items = resize(stack->items, stack->length, stack_new_limit);
+		stack->length += stack_new_limit;
+
+		printf("length is of %d items now.\n", stack->length);
 	}
 
 	stack->items[stack->top] = value;
@@ -59,7 +116,6 @@ void stack_print(Stack* stack) {
 }
 
 int main() {
-	const int stack_size = 5;
 	Stack* stack = stack_create(stack_size);
 
 	push(stack, 1);
@@ -67,10 +123,7 @@ int main() {
 	push(stack, 3);
 	push(stack, 4);
 	push(stack, 5);
-
-	pop(stack);
-	pop(stack);
-	pop(stack);
+	push(stack, 6);
 
 	stack_print(stack);
 
