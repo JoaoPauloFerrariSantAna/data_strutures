@@ -21,18 +21,6 @@ typedef struct {
 	Items items;
 } Stack; 
 
-void show(Items array, StackLength length) {
-	for(int i = 0; i < length; i++) {
-		printf("%d\n", array[i]);
-	}
-}
-
-void fill(Items items, int start, int until) {
-	for(int i = start; i < until; i++) {
-		items[i] = 2 * i;
-	}
-}
-
 void copy_to(Items dest, Items source, int until) {
 	for(int i = 0; i < until; i++) {
 		/* copying the data to "dest" from "source" */
@@ -77,15 +65,11 @@ Stack* stack_create(int init_length) {
 
 void push(Stack* stack, int value) {
 	if(stack->top == stack->length) {
-		printf("updating length...\n");
-
 		/* instead of the size of "stack->items" */
 		/* we send the length, because then we will */
 		/* have the actual amount of the array size */
 		stack->items = resize(stack->items, stack->length, stack_new_limit);
 		stack->length += stack_new_limit;
-
-		printf("length is of %d items now.\n", stack->length);
 	}
 
 	stack->items[stack->top] = value;
@@ -105,8 +89,6 @@ void pop(Stack* stack) {
 
 	stack->top--;
 	stack->length--;
-
-	printf("Erasing top...\n");
 }
 
 void stack_print(Stack* stack) {
@@ -117,18 +99,7 @@ void stack_print(Stack* stack) {
 
 int main() {
 	Stack* stack = stack_create(stack_size);
-
-	push(stack, 1);
-	push(stack, 2);
-	push(stack, 3);
-	push(stack, 4);
-	push(stack, 5);
-	push(stack, 6);
-
-	stack_print(stack);
-
 	free(stack);
 	stack = NULL;
-
 	return 0;
 }
